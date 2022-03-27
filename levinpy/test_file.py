@@ -1,7 +1,7 @@
 from Hermite_Levin import Levin_Int
 import matplotlib.pyplot as pl
 import numpy as np
-from jeet_mod_methods import Cheb_nodes
+from helper_methods import Cheb_nodes
 import sympy as sp
 from Levin_Bernstein import Levin_Bern_int
 
