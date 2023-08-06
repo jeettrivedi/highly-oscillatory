@@ -1,0 +1,23 @@
+[project]
+name = "levinpy"
+version = "0.0.1"
+authors = [{name="Jeet Trivedi", email="jtriv@riseup.net"},]
+description = "Python implementation of Levin integration methods for highly oscillatory integrals"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/jeettrivedi/highly-oscillatory"
+"Bug Tracker" = "https://github.com/jeettrivedi/highly-oscillatory/issues"
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]

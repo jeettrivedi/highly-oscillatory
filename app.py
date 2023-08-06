@@ -1,9 +1,7 @@
-from Hermite_Levin import Levin_Int
-import matplotlib.pyplot as pl
+from levinpy.helper_methods import Cheb_nodes
+from levinpy.Hermite_Levin import Levin_Int
 import numpy as np
-from helper_methods import Cheb_nodes
-import sympy as sp
-from Levin_Bernstein import Levin_Bern_int
+from levinpy.Levin_Bernstein import Levin_Bern_int
 
 a = -1
 b = 1
@@ -27,11 +25,11 @@ def g(x):
 	# return -(x-0.1)**2
 	return x
 
-ints = Levin_Int(f,g,tau,s,w_range)
-# ints = Levin_Bern_int(f,g,tau,w_range)
+# ints = Levin_Int(f,g,tau,s,w_range)
+ints = Levin_Bern_int(f,g,tau,w_range)
 
 print(ints)
 
-pl.figure()
-pl.plot(w_range,ints.real)
+# pl.figure()
+# pl.plot(w_range,ints.real)
 # pl.show()
