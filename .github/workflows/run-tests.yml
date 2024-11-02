@@ -33,11 +33,24 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          pytest --cov=your_package_name --cov-report=xml
+          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=levin tests/ | tee pytest-coverage.txt
 
-      - name: Generate coverage badge
-        run: |
-          coverage-badge -o coverage.svg -f
+      - name: Pytest coverage comment
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./pytest-coverage.txt
+          pytest-xml-coverage-path: ./coverage.xml
+          title: Test Coverage Summary
+          badge-title: Coverage
+          hide-badge: false
+          hide-report: false
+          create-new-comment: false
+          hide-comment: false
+          report-only-changed-files: false
+          remove-link-from-badge: false
+          unique-id-for-comment: python3.12
+          junitxml-path: ./pytest.xml
+          junitxml-title: Test Results
 
       - name: Commit coverage badge
         if: github.event_name == 'push'

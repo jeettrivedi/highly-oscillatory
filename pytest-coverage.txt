@@ -1,0 +1,13 @@
+..............                                                           [100%]
+-------- generated xml file: /workspaces/highly-oscillatory/pytest.xml ---------
+
+---------- coverage: platform linux, python 3.12.7-final-0 -----------
+Name                       Stmts   Miss  Cover   Missing
+--------------------------------------------------------
+src/levin/finite_diff.py      49     49     0%   1-117
+--------------------------------------------------------
+TOTAL                        240     49    80%
+
+5 files skipped due to complete coverage.
+
+14 passed in 1.95s
