@@ -1,28 +1,20 @@
 import numpy as np
-
-# import matplotlib.pyplot as pl
-import helper_methods as jt
-from scipy.integrate import quad
-from scipy.special import factorial, comb
 from sympy import (
-    diff,
-    Symbol,
-    limit,
-    evalf,
-    sqrt,
-    sin,
-    cos,
-    root,
-    log,
-    exp,
-    simplify,
     N,
+    Symbol,
+    diff,
 )
-from genbarywts import Genbarywts
+
+from .common.utils import TSVD_Solve
 
 
 def Compact_diff_matrix(tau):
-    # Non regularized version
+    """
+    Returns the differentiation matrix for the compact scheme
+    
+    Args:
+        tau (np.ndarray): array of nodes
+    """
 
     N = len(tau)
     [A, B] = [np.zeros([N, N]), np.zeros([N, N])]
@@ -88,7 +80,7 @@ def Compact_diff_matrix(tau):
     return [-A, B]
 
 
-def Levin_Int_Comp_diff(F, G, tau, omega_range):
+def Levin_Int_Comp_diff(F, G, tau, omega_range, solver='TSVD'):
     x = Symbol("x")
 
     def f(x):
@@ -97,7 +89,7 @@ def Levin_Int_Comp_diff(F, G, tau, omega_range):
     def g(x):
         return G(x)
 
-    Levin = np.full(len(omega_range), np.complex(0, 0))
+    Levin = np.full(len(omega_range), complex(0, 0))
     Number_Of_Nodes = len(tau)
 
     p = np.full([Number_Of_Nodes], np.complex(0, 0))
@@ -111,10 +103,13 @@ def Levin_Int_Comp_diff(F, G, tau, omega_range):
 
     i = 0
     for omega in omega_range:
-        # P = np.linalg.solve(B+np.complex(0,omega)*np.dot(A,g_matrix),np.dot(A,p))
-        P = jt.TSVD_Solve(
-            B + np.complex(0, omega) * np.dot(A, g_matrix), np.dot(A, p), 1e-13
-        )
+        if solver == 'TSVD':
+            P = TSVD_Solve(
+                B + np.complex(0, omega) * np.dot(A, g_matrix), np.dot(A, p), 1e-13
+            )
+        else:
+            P = np.linalg.solve(B+np.complex(0,omega)*np.dot(A,g_matrix),np.dot(A,p))
+
         Levin[i] = P[-1] * np.exp(np.complex(0, omega) * float(N(g(tau[-1])))) - P[
             0
         ] * np.exp(np.complex(0, omega) * float(N(g(tau[0]))))

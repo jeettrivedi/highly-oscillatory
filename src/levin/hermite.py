@@ -1,12 +1,28 @@
-import sympy as sp
 import numpy as np
-from scipy.special import factorial, comb
+import sympy as sp
+from scipy.special import comb, factorial
 from sympy import diff, simplify
-from .genbarywts import Genbarywts
-from .helper_methods import Decompress, range_inc
+
+from .common.genbarywts import Genbarywts
+from .common.utils import Decompress, range_inc
 
 
-def Levin_Int(F, G, tau, s, omega_range):
+def levin_hermite_integral(F: callable, G: callable, tau: np.ndarray, s: np.ndarray, omega_range: np.ndarray) -> np.ndarray:
+    """
+    Levin-Hermite integration method
+
+    Integrates the function $F(x)*\exp(i*omega*G(x))$ over the interval [a,b] using the Levin-Hermite method
+
+    Args:
+        F (callable): Function to be integrated
+        G (callable): Function to be integrated
+        tau (np.ndarray): Nodes
+        s (np.ndarray): Derivative orders
+        omega_range (np.ndarray): Omega range
+
+    Returns:
+        np.ndarray: Array of complex numbers representing the integral values at each tau point for each omega value
+    """
     x = sp.Symbol("x")
 
     def f(x):
@@ -16,7 +32,7 @@ def Levin_Int(F, G, tau, s, omega_range):
         return G(x)
 
     g_num = sp.lambdify(x, g(x))
-    Levin = np.full(len(omega_range), np.complex(0, 0))
+    Levin = np.full(len(omega_range), complex(0, 0))
 
     Number_Of_Nodes = len(tau)
     d = sum(s)
@@ -25,11 +41,12 @@ def Levin_Int(F, G, tau, s, omega_range):
     #
     # p = [[f(t_0),f'(t_0),...,f^(s_0-1)(t_0)],
     #       ...,[f(t_n),f'(t_n),...,f^(s_n-1)(t_n)]]
-    p = np.full([Number_Of_Nodes, max(s)], np.complex(0, 0))
-    p_rhs = np.full([Number_Of_Nodes, max(s)], np.complex(0, 0))
+    p = np.full([Number_Of_Nodes, max(s)], complex(0, 0))
+    p_rhs = np.full([Number_Of_Nodes, max(s)], complex(0, 0))
     for i in range(0, len(tau)):
         for j in range(0, s[i]):
-            p[i, j] = simplify(sp.diff(f(x), x, j).subs(x, tau[i])) / factorial(j)
+            p[i, j] = simplify(sp.diff(f(x), x, j).subs(
+                x, tau[i])) / factorial(j)
             p_rhs[i, j] = simplify(sp.diff(f(x), x, j).subs(x, tau[i]))
 
     p = Decompress(p, s)
@@ -52,13 +69,13 @@ def Levin_Int(F, G, tau, s, omega_range):
         # Create a Coefficient matrix for the linear system
         # f = (D + iwg')*P
         # The non-trivial work here is calculating the product term g'P
-        Coeff_matrix = np.full([d, d], np.complex(0, 0))
+        Coeff_matrix = np.full([d, d], complex(0, 0))
         k = 0
         for j in Sum_s:
             for s_i in range(0, s[k]):
                 Coeff_matrix[j + s_i, :] = D[j + s_i, :] * factorial(s_i)
                 for l in range_inc(1, s_i):
-                    Coeff_matrix[j + s_i, :] = Coeff_matrix[j + s_i, :] + np.complex(
+                    Coeff_matrix[j + s_i, :] = Coeff_matrix[j + s_i, :] + complex(
                         0, omega
                     ) * comb(s_i, l) * factorial(l - 1) * D[j + l - 1, :] * diff(
                         g(x), x, s_i - l + 1
@@ -66,7 +83,7 @@ def Levin_Int(F, G, tau, s, omega_range):
                         x, tau[k]
                     )
 
-                Coeff_matrix[j + s_i, :] = Coeff_matrix[j + s_i, :] + np.complex(
+                Coeff_matrix[j + s_i, :] = Coeff_matrix[j + s_i, :] + complex(
                     0, omega
                 ) * np.eye(d)[j, :] * diff(g(x), x, s_i + 1).subs(x, tau[k])
             k += 1

@@ -1,0 +1,18 @@
+# .ruff.toml
+
+[tool.ruff]
+# List of enabled rules
+select = ["E", "F", "W", "C", "N", "Q", "B", "A"]
+
+# Exclude specific files or directories
+exclude = ["build", "dist", "venv"]
+
+# Maximum line length
+line-length = 88
+
+# Enable autofix
+fix = true
+
+# Enable specific rules
+[tool.ruff.rules]
+E501 = { "max-line-length" = 88 }
