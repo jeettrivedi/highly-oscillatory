@@ -1,7 +1,7 @@
-from levinpy.helper_methods import Cheb_nodes
-from levinpy.Hermite_Levin import Levin_Int
+from levin.common.utils import Cheb_nodes
+from levin.hermite import levin_hermite_integral
 import numpy as np
-from levinpy.Levin_Bernstein import Levin_Bern_int
+from levin.bernstein import levin_bernstein_integral
 
 a = -1
 b = 1
@@ -13,11 +13,11 @@ tau = Cheb_nodes(a,b,N)
 w_range = np.arange(10,110,10)
 
 def f(x):
-	# return sp.sin(x)
+	# return np.sin(x)
 	# if(x==1):
 	# 	return 0
 	# else:
-	# return x*(1-x)/sp.sqrt(1+x**2)
+	# return x*(1-x)/np.sqrt(1+x**2)
 	return (1/(1+25*x**2)-1/26)
 	# return x*(1-x)
 
@@ -25,8 +25,8 @@ def g(x):
 	# return -(x-0.1)**2
 	return x
 
-# ints = Levin_Int(f,g,tau,s,w_range)
-ints = Levin_Bern_int(f,g,tau,w_range)
+ints = levin_hermite_integral(f,g,tau,s,w_range)
+# ints = levin_bernstein_integral(f,g,tau,w_range)
 
 print(ints)
 
