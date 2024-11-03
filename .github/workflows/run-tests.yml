@@ -48,17 +48,7 @@ jobs:
           hide-comment: false
           report-only-changed-files: false
           remove-link-from-badge: false
-          unique-id-for-comment: python3.12
-          junitxml-path: ./pytest.xml
-          junitxml-title: Test Results
+          unique-id-for-comment:
 
-      - name: Commit coverage badge
-        if: github.event_name == 'push'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add coverage.svg
-          git commit -m 'Update coverage badge'
-          git push
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
